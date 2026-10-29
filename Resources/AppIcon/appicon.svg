@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+    <defs>
+        <!-- التدرج الذهبي الفخم -->
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FDE047" />
+            <stop offset="50%" stop-color="#FACC15" />
+            <stop offset="100%" stop-color="#CA8A04" />
+        </linearGradient>
+        <!-- التدرج الكحلي للخلفية -->
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#1E293B" />
+            <stop offset="100%" stop-color="#0F172A" />
+        </linearGradient>
+    </defs>
+    
+    <!-- الخلفية الكحلية -->
+    <rect width="1024" height="1024" fill="url(#bgGrad)"/>
+    
+    <!-- الحلقات الذهبية -->
+    <circle cx="512" cy="512" r="320" fill="none" stroke="url(#goldGrad)" stroke-width="12" opacity="0.3"/>
+    <circle cx="512" cy="512" r="280" fill="none" stroke="url(#goldGrad)" stroke-width="24"/>
+    
+    <!-- حرف M الاحترافي -->
+    <path d="M340 680 V360 L512 520 L684 360 V680" fill="none" stroke="url(#goldGrad)" stroke-width="64" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

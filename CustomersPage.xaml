@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MajesticMobile.CustomersPage"
+             Title="العملاء والديون"
+             FlowDirection="RightToLeft"
+             BackgroundColor="#0B131D">
+
+    <Grid>
+        <Grid RowDefinitions="Auto, *" Padding="15" RowSpacing="15">
+
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                <Frame Grid.Column="0" BackgroundColor="#162130" Padding="15,0" CornerRadius="12" BorderColor="#2C3E50" HeightRequest="50" HasShadow="True">
+                    <Entry x:Name="searchBar" Placeholder="🔍 بحث بالاسم أو رقم الهاتف أو المنطقة..." BackgroundColor="Transparent" TextColor="White" PlaceholderColor="#7F8C8D" TextChanged="OnSearchTextChanged" />
+                </Frame>
+
+                <Button Grid.Column="1" Text="➕ جديد" BackgroundColor="#27AE60" TextColor="White" FontAttributes="Bold" CornerRadius="12" HeightRequest="50" WidthRequest="80" Clicked="OnShowAddCustomerFormClicked" />
+            </Grid>
+
+            <RefreshView Grid.Row="1" x:Name="refreshView" Refreshing="OnRefreshViewRefreshing" RefreshColor="#3498DB">
+                <CollectionView x:Name="cvCustomers" SelectionMode="Single" SelectionChanged="OnCustomerSelected">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout VerticalOptions="Center" Padding="20" Spacing="15">
+                            <Label Text="👥" FontSize="60" HorizontalOptions="Center" Opacity="0.5"/>
+                            <Label Text="لا يوجد عملاء مسجلين حالياً." TextColor="#7F8C8D" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" />
+                            <Label Text="اسحب للأسفل للتحديث أو أضف عميل جديد." TextColor="#95A5A6" FontSize="13" HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="#162130" Margin="0,0,0,10" Padding="15" BorderColor="#2C3E50" CornerRadius="12" HasShadow="True">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="5">
+                                        <Label Text="{Binding Name}" TextColor="White" FontSize="17" FontAttributes="Bold" />
+                                        <HorizontalStackLayout Spacing="10">
+                                            <Label Text="{Binding Phone}" TextColor="#95A5A6" FontSize="13" IsVisible="{Binding Phone, Converter={StaticResource StringVisibilityConverter}}"/>
+                                            <Label Text="{Binding Region, StringFormat='📍 {0}'}" TextColor="#3498DB" FontSize="12" IsVisible="{Binding Region, Converter={StaticResource StringVisibilityConverter}}"/>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" Spacing="2">
+                                        <Label Text="المديونية" TextColor="#7F8C8D" FontSize="11" HorizontalOptions="End" />
+                                        <Label Text="{Binding Balance, StringFormat='{0:N2} ج.م'}" 
+                                               TextColor="{Binding Balance, Converter={StaticResource BalanceColorConverter}}" 
+                                               FontSize="16" FontAttributes="Bold" HorizontalOptions="End" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+
+        <!-- نافذة إضافة عميل جديد -->
+        <Grid x:Name="overlayAddCustomer" IsVisible="False" BackgroundColor="#B3000000">
+            <Frame BackgroundColor="#162130" CornerRadius="15" BorderColor="#3498DB" Padding="20" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="320" HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="إضافة عميل جديد 👤" TextColor="White" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,10"/>
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="اسم العميل *" TextColor="#BDC3C7" FontSize="13" />
+                        <Entry x:Name="txtNewName" BackgroundColor="#0B131D" TextColor="White" Placeholder="اكتب اسم العميل..." PlaceholderColor="#7F8C8D" />
+                    </VerticalStackLayout>
+
+                    <!-- تم إضافة حقل المنطقة هنا -->
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="المنطقة / العنوان" TextColor="#BDC3C7" FontSize="13" />
+                        <Entry x:Name="txtNewRegion" BackgroundColor="#0B131D" TextColor="White" Placeholder="المنطقة..." PlaceholderColor="#7F8C8D" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="رقم الهاتف" TextColor="#BDC3C7" FontSize="13" />
+                        <Entry x:Name="txtNewPhone" BackgroundColor="#0B131D" TextColor="White" Keyboard="Telephone" Placeholder="01..." PlaceholderColor="#7F8C8D" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="رصيد افتتاحي (عليه)" TextColor="#BDC3C7" FontSize="13" />
+                        <Entry x:Name="txtNewBalance" BackgroundColor="#0B131D" TextColor="#E74C3C" FontAttributes="Bold" Keyboard="Numeric" Placeholder="0" PlaceholderColor="#7F8C8D" Text="0" />
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,15,0,0">
+                        <Button Grid.Column="0" Text="إلغاء" BackgroundColor="#95A5A6" TextColor="White" FontAttributes="Bold" CornerRadius="10" Clicked="OnCancelAddCustomerClicked" />
+                        <Button Grid.Column="1" x:Name="btnSaveCustomer" Text="حفظ ✔️" BackgroundColor="#3498DB" TextColor="White" FontAttributes="Bold" CornerRadius="10" Clicked="OnSaveCustomerClicked" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+
+    </Grid>
+</ContentPage>

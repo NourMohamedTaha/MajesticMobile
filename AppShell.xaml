@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MajesticMobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MajesticMobile"
+    Shell.FlyoutBehavior="Flyout"
+    Title="MajesticMobile"
+    FlowDirection="RightToLeft"
+    BackgroundColor="#1E2837"
+    Shell.ForegroundColor="White">
+
+    <!-- تصميم رأس القائمة الجانبية -->
+    <Shell.FlyoutHeader>
+        <Grid HeightRequest="150" BackgroundColor="#1E2837" Padding="20">
+            <Label Text="ماجستيك 🏢" TextColor="White" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Label Text="نسخة الفروع والمندوبين" TextColor="#3498DB" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="End" Margin="0,0,0,20"/>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <!-- عناصر القائمة الجانبية (الشاشات) -->
+
+    <FlyoutItem Title="الرئيسية (Dashboard)">
+        <ShellContent Route="MainPage" ContentTemplate="{DataTemplate local:MainPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="شاشة البيع (POS)">
+        <ShellContent Route="SalesPage" ContentTemplate="{DataTemplate local:SalesPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="أرصدة المخزن">
+        <ShellContent Route="InventoryPage" ContentTemplate="{DataTemplate local:InventoryPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="العملاء والمديونيات">
+        <ShellContent Route="CustomersPage" ContentTemplate="{DataTemplate local:CustomersPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="الطلبيات والاستلام">
+        <ShellContent Route="OrdersPage" ContentTemplate="{DataTemplate local:OrdersPage}" />
+    </FlyoutItem>
+
+    <!-- تم التعديل هنا: التوجيه لـ TreasuryPage بدلاً من MainPage -->
+    <FlyoutItem Title="الخزنة والمصروفات">
+        <ShellContent Route="TreasuryPage" ContentTemplate="{DataTemplate local:TreasuryPage}" />
+    </FlyoutItem>
+
+    <!-- الشاشة المؤقتة الباقية -->
+    <FlyoutItem Title="سجل الفواتير">
+        <ShellContent Route="InvoicesHistoryPage" ContentTemplate="{DataTemplate local:InvoicesHistoryPage}" />
+    </FlyoutItem>
+
+</Shell>

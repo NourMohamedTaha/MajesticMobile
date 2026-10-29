@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MajesticMobile"
+             xmlns:models="clr-namespace:MajesticMobile.Models"
+             x:Class="MajesticMobile.OrdersPage"
+             FlowDirection="RightToLeft"
+             BackgroundColor="#0B131D"
+             Title="إدارة الطلبيات">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*, *, *" Margin="10" ColumnSpacing="5">
+            <Button x:Name="btnTabNewOrder" Grid.Column="0" Text="طلب جديد 🛒" BackgroundColor="#3498DB" TextColor="White" FontAttributes="Bold" CornerRadius="8" Clicked="OnTabClicked" CommandParameter="New"/>
+            <Button x:Name="btnTabActive" Grid.Column="1" Text="طلبيات نشطة 🚚" BackgroundColor="#162130" TextColor="#BDC3C7" FontAttributes="Bold" CornerRadius="8" Clicked="OnTabClicked" CommandParameter="Active"/>
+            <Button x:Name="btnTabHistory" Grid.Column="2" Text="سجل الطلبات 📜" BackgroundColor="#162130" TextColor="#BDC3C7" FontAttributes="Bold" CornerRadius="8" Clicked="OnTabClicked" CommandParameter="History"/>
+        </Grid>
+
+        <Grid x:Name="viewNewOrder" Grid.Row="1" IsVisible="True" Padding="10">
+            <Grid RowDefinitions="Auto, *, Auto">
+
+                <VerticalStackLayout Grid.Row="0" Spacing="10">
+                    <Label Text="اختيار الأصناف" TextColor="#ECF0F1" FontAttributes="Bold" FontSize="16" />
+
+                    <VerticalStackLayout Spacing="0">
+                        <Frame BackgroundColor="#1F2E40" Padding="0" CornerRadius="10" BorderColor="#3498DB" HeightRequest="50">
+                            <Grid ColumnDefinitions="*, 50">
+                                <Entry Grid.Column="0" x:Name="searchProduct" 
+                                       Margin="15,0,0,0"
+                                       Placeholder="ابحث عن صنف لطلبه..." 
+                                       BackgroundColor="Transparent" TextColor="White" PlaceholderColor="#7F8C8D" 
+                                       TextChanged="OnProductSearchTextChanged" Focused="OnProductSearchFocused" />
+
+                                <Button Grid.Column="1" Text="▼" TextColor="#3498DB" FontSize="20" FontAttributes="Bold" 
+                                        BackgroundColor="Transparent" BorderColor="Transparent" Padding="0"
+                                        Clicked="OnToggleProductsList_Clicked" />
+                            </Grid>
+                        </Frame>
+
+                        <Frame x:Name="frameProducts" IsVisible="False" BackgroundColor="#162130" Padding="0" CornerRadius="10" BorderColor="#34495E" HeightRequest="180" HasShadow="True" Margin="0,5,0,0">
+                            <CollectionView x:Name="cvProductsList" SelectionMode="Single" SelectionChanged="OnProductSelectedFromSearch">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:ProductModel">
+                                        <Grid Padding="15,12" BackgroundColor="Transparent">
+                                            <Label Text="{Binding Name}" TextColor="White" FontSize="15" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10" Margin="0,5,0,0">
+                        <Entry x:Name="entryQuantity" Grid.Column="0" Placeholder="الكمية المطلوبة" Keyboard="Numeric" TextColor="White" BackgroundColor="#162130" PlaceholderColor="#7F8C8D"/>
+                        <Button Grid.Column="1" Text="إضافة للقائمة ➕" BackgroundColor="#27AE60" TextColor="White" FontAttributes="Bold" CornerRadius="8" WidthRequest="130" Clicked="OnAddToCartClicked"/>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <Frame Grid.Row="1" BackgroundColor="#162130" BorderColor="#2C3E50" CornerRadius="10" Padding="10" Margin="0,15,0,15" HasShadow="True">
+                    <VerticalStackLayout>
+                        <Label Text="قائمة الطلبية الحالية 📋" TextColor="#BDC3C7" FontAttributes="Bold" FontSize="14" Margin="0,0,0,10"/>
+                        <CollectionView x:Name="cvCartItems">
+                            <CollectionView.EmptyView>
+                                <Label Text="لم تقم بإضافة أصناف للطلبية بعد." TextColor="#7F8C8D" HorizontalOptions="Center" VerticalOptions="Center" Margin="0,30" />
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:OrderDetailModel">
+                                    <Frame BackgroundColor="#1F2E40" BorderColor="Transparent" CornerRadius="8" Padding="15" Margin="0,0,0,8">
+                                        <Grid ColumnDefinitions="*, Auto, Auto">
+                                            <Label Grid.Column="0" Text="{Binding ProductName}" TextColor="White" FontAttributes="Bold" VerticalOptions="Center"/>
+                                            <Label Grid.Column="1" Text="{Binding RequestedQuantity, StringFormat='الكمية: {0}'}" TextColor="#F1C40F" FontAttributes="Bold" VerticalOptions="Center" Margin="15,0"/>
+                                            <Button Grid.Column="2" Text="🗑️" BackgroundColor="#E74C3C" TextColor="White" CornerRadius="6" HeightRequest="35" WidthRequest="40" Padding="0" Clicked="OnRemoveCartItemClicked"/>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Button Grid.Row="2" Text="إرسال الطلبية للمخزن 🚀" BackgroundColor="#3498DB" TextColor="White" FontAttributes="Bold" FontSize="16" HeightRequest="60" CornerRadius="12" Margin="0,0,0,10" Clicked="OnSubmitOrderClicked"/>
+            </Grid>
+        </Grid>
+
+        <Grid x:Name="viewActiveOrders" Grid.Row="1" IsVisible="False" Padding="10">
+            <RefreshView x:Name="refreshActiveOrders" Refreshing="OnRefreshOrders" RefreshColor="#3498DB">
+                <CollectionView x:Name="cvActiveOrders">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout VerticalOptions="Center" Spacing="10">
+                            <Label Text="🚚" FontSize="50" HorizontalOptions="Center" Opacity="0.5"/>
+                            <Label Text="لا توجد طلبيات نشطة حالياً." TextColor="#7F8C8D" HorizontalOptions="Center" FontSize="15" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:OrderDisplayViewModel">
+                            <Frame BackgroundColor="#162130" BorderColor="#3498DB" CornerRadius="12" Padding="15" Margin="0,0,0,10" HasShadow="True">
+                                <VerticalStackLayout Spacing="8">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <Label Grid.Column="0" Text="{Binding OrderDate, StringFormat='تاريخ الطلب: {0:yyyy/MM/dd hh:mm tt}'}" TextColor="#95A5A6" FontSize="13" VerticalOptions="Center"/>
+                                        <Frame Grid.Column="1" BackgroundColor="#F39C12" Padding="8,4" CornerRadius="5" BorderColor="Transparent">
+                                            <Label Text="{Binding Status}" TextColor="White" FontAttributes="Bold" FontSize="12"/>
+                                        </Frame>
+                                    </Grid>
+                                    <Label Text="{Binding WarehouseMessage, StringFormat='💬 رد المخزن: {0}'}" TextColor="#E74C3C" FontSize="14" FontAttributes="Bold" IsVisible="{Binding HasMessage}"/>
+                                    <Button Text="تأكيد استلام البضاعة ✅" BackgroundColor="#27AE60" TextColor="White" FontAttributes="Bold" CornerRadius="8" Margin="0,10,0,0" Clicked="OnReceiveOrderClicked" IsVisible="{Binding IsShipped}"/>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+
+        <Grid x:Name="viewHistory" Grid.Row="1" IsVisible="False" Padding="10">
+            <RefreshView x:Name="refreshHistoryOrders" Refreshing="OnRefreshOrders" RefreshColor="#3498DB">
+                <CollectionView x:Name="cvHistoryOrders">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout VerticalOptions="Center" Spacing="10">
+                            <Label Text="📜" FontSize="50" HorizontalOptions="Center" Opacity="0.5"/>
+                            <Label Text="سجل الطلبيات فارغ." TextColor="#7F8C8D" HorizontalOptions="Center" FontSize="15" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:OrderDisplayViewModel">
+                            <Frame BackgroundColor="#162130" BorderColor="#2C3E50" CornerRadius="12" Padding="15" Margin="0,0,0,10" HasShadow="True">
+                                <VerticalStackLayout Spacing="8">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <Label Grid.Column="0" Text="{Binding OrderDate, StringFormat='التاريخ: {0:yyyy/MM/dd hh:mm tt}'}" TextColor="#95A5A6" FontSize="13" VerticalOptions="Center"/>
+                                        <Label Grid.Column="1" Text="{Binding Status}" TextColor="{Binding StatusColor}" FontAttributes="Bold" FontSize="13" VerticalOptions="Center"/>
+                                    </Grid>
+                                    <Label Text="{Binding WarehouseMessage, StringFormat='💬 التفاصيل: {0}'}" TextColor="#BDC3C7" FontSize="13" IsVisible="{Binding HasMessage}"/>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </Grid>
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MajesticMobile.LoginPage"
+             FlowDirection="RightToLeft"
+             BackgroundColor="#0F172A">
+
+    <Grid>
+        <!-- 1. الخلفية الثابتة المتدرجة -->
+        <BoxView>
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#15224E" Offset="0.0" />
+                    <GradientStop Color="#0F172A" Offset="1.0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <!-- 2. لوحة الرسم (Canvas) اللي هيشتغل عليها الأنيميشن -->
+        <GraphicsView x:Name="backgroundGraphicsView" HorizontalOptions="Fill" VerticalOptions="Fill" />
+
+        <!-- 3. المحتوى (نفس الكارت القديم بتاعك بس متظبط) -->
+        <ScrollView>
+            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="30" WidthRequest="340" Padding="0, 50, 0, 50">
+
+                <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                    <Border Stroke="#FACC15" StrokeThickness="2" BackgroundColor="#070B1A"
+                            HeightRequest="90" WidthRequest="90" StrokeShape="RoundRectangle 45" 
+                            HorizontalOptions="Center" VerticalOptions="Center">
+                        <Border.Shadow>
+                            <Shadow Brush="#FACC15" Opacity="0.3" Radius="15" Offset="0,0" />
+                        </Border.Shadow>
+                        <Label Text="M" TextColor="#FACC15" FontSize="42" FontAttributes="Bold" 
+                               HorizontalOptions="Center" VerticalOptions="Center" Margin="0,-5,0,0"/>
+                    </Border>
+
+                    <Label Text="نظام ماجستيك" TextColor="#F1F5F9" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10,0,0"/>
+                    <Label Text="نسخة الفروع والمندوبين" TextColor="#3B82F6" FontSize="14" FontAttributes="Bold" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <Border x:Name="loginCard" BackgroundColor="#0F172A" Stroke="#2C3A52" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="25">
+                    <Border.Shadow>
+                        <Shadow Brush="#000000" Opacity="0.4" Radius="20" Offset="0,10" />
+                    </Border.Shadow>
+
+                    <VerticalStackLayout Spacing="20">
+                        <Label Text="تسجيل الدخول" TextColor="#F1F5F9" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center"/>
+                        <BoxView HeightRequest="1" Color="#2C3A52" Margin="0,-5,0,5"/>
+
+                        <Border BackgroundColor="#162035" Stroke="#2C3A52" StrokeThickness="1" StrokeShape="RoundRectangle 12" HeightRequest="55" Padding="15,0">
+                            <Entry x:Name="entryUsername" Placeholder="اسم المستخدم" TextColor="#F1F5F9" PlaceholderColor="#94A3B8"
+                                   BackgroundColor="Transparent" HorizontalTextAlignment="Center" VerticalOptions="Center" ClearButtonVisibility="WhileEditing"
+                                   Focused="OnEntryFocused" Unfocused="OnEntryUnfocused"/>
+                        </Border>
+
+                        <Border BackgroundColor="#162035" Stroke="#2C3A52" StrokeThickness="1" StrokeShape="RoundRectangle 12" HeightRequest="55" Padding="15,0">
+                            <Entry x:Name="entryPassword" Placeholder="كلمة المرور" IsPassword="True" TextColor="#F1F5F9" PlaceholderColor="#94A3B8"
+                                   BackgroundColor="Transparent" HorizontalTextAlignment="Center" VerticalOptions="Center" ClearButtonVisibility="WhileEditing"
+                                   Focused="OnEntryFocused" Unfocused="OnEntryUnfocused"/>
+                        </Border>
+
+                        <VerticalStackLayout x:Name="layoutLoading" Spacing="10" IsVisible="False" Opacity="0">
+                            <ActivityIndicator IsRunning="True" Color="#FACC15" Margin="0,10"/>
+                            <Label x:Name="lblLoadingText" Text="جاري التحقق من البيانات..." TextColor="#94A3B8" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+
+                        <Button x:Name="btnLogin" Text="دخول للنظام 🚀" BackgroundColor="#22C55E" TextColor="White" 
+                                FontAttributes="Bold" FontSize="16" HeightRequest="55" CornerRadius="12" Clicked="OnLoginClicked"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

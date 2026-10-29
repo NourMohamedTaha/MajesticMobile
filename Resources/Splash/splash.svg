@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+	<!-- حلقة ذهبية -->
+	<circle cx="512" cy="512" r="280" fill="none" stroke="#FACC15" stroke-width="24" />
+
+	<!-- حرف M -->
+	<path d="M360 660 V360 L512 510 L664 360 V660" fill="none" stroke="#FACC15" stroke-width="50" stroke-linejoin="round" stroke-linecap="round" />
+</svg>

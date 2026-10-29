@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+    <defs>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FDE047" />
+            <stop offset="50%" stop-color="#FACC15" />
+            <stop offset="100%" stop-color="#CA8A04" />
+        </linearGradient>
+    </defs>
+    
+    <!-- الحلقات الذهبية -->
+    <circle cx="512" cy="420" r="240" fill="none" stroke="url(#goldGrad)" stroke-width="8" opacity="0.3"/>
+    <circle cx="512" cy="420" r="210" fill="none" stroke="url(#goldGrad)" stroke-width="20"/>
+    
+    <!-- حرف M -->
+    <path d="M380 540 V300 L512 420 L644 300 V540" fill="none" stroke="url(#goldGrad)" stroke-width="50" stroke-linejoin="round" stroke-linecap="round"/>
+    
+    <!-- نصوص اسم النظام -->
+    <text x="512" y="740" font-family="sans-serif" font-size="72" font-weight="bold" fill="#F8FAFC" text-anchor="middle">MAJESTIC</text>
+    <text x="512" y="800" font-family="sans-serif" font-size="32" font-weight="normal" fill="#94A3B8" text-anchor="middle" letter-spacing="8">SYSTEM</text>
+</svg>

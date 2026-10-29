@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MajesticMobile.InventoryPage"
+             Title="أرصدة المخزن"
+             FlowDirection="RightToLeft"
+             BackgroundColor="#0B131D">
+
+    <Grid RowDefinitions="Auto, Auto, Auto, *">
+
+        <!-- شريط البحث وزر الإضافة -->
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="15,15,15,5" ColumnSpacing="10">
+            <Frame Grid.Column="0" BackgroundColor="#162130" CornerRadius="12" Padding="0" HasShadow="True" BorderColor="#2C3E50">
+                <SearchBar x:Name="searchBar" 
+                           Placeholder="ابحث باسم المنتج..." 
+                           BackgroundColor="Transparent" 
+                           TextColor="White" 
+                           PlaceholderColor="#7F8C8D"
+                           CancelButtonColor="#E74C3C"
+                           TextChanged="OnSearchTextChanged" />
+            </Frame>
+
+            <Button Grid.Column="1" 
+                    Text="+ إضافة" 
+                    BackgroundColor="#27AE60" 
+                    TextColor="White" 
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    Padding="15,0"
+                    Clicked="OnAddBranchProductClicked" />
+        </Grid>
+
+        <!-- فلتر الأقسام (شامل تبويب النواقص) -->
+        <CollectionView x:Name="cvCategories" Grid.Row="1" HeightRequest="55" Margin="15,10,15,10">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Button Text="{Binding Name}" 
+                            BackgroundColor="{Binding BgColor}" 
+                            TextColor="White" 
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            CornerRadius="25"
+                            Padding="25,0"
+                            CommandParameter="{Binding Id}"
+                            Clicked="OnCategoryClicked" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- زر المزامنة -->
+        <Button x:Name="btnSync"
+                Grid.Row="2"
+                Margin="15,0,15,15"
+                Text="تحديث الأرصدة من السيرفر 🔄" 
+                BackgroundColor="#2980B9" 
+                TextColor="White" 
+                FontSize="16"
+                FontAttributes="Bold"
+                CornerRadius="12"
+                HeightRequest="55"
+                Clicked="OnSyncFromServerClicked" />
+
+        <!-- قائمة المنتجات -->
+        <CollectionView x:Name="cvProducts" Grid.Row="3" Margin="15,0,15,15">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" Padding="20" Spacing="10">
+                    <Label Text="📦" FontSize="50" HorizontalOptions="Center" />
+                    <Label Text="لا توجد منتجات مطابقة للبحث أو القسم المختار."
+                           TextColor="#95A5A6" FontSize="15" FontAttributes="Bold" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BackgroundColor="#162130" Margin="0,0,0,12" Padding="20" BorderColor="#2C3E50" CornerRadius="15" HasShadow="True">
+                        <Grid ColumnDefinitions="*, Auto">
+
+                            <!-- اسم المنتج (بدون السعر) -->
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="5">
+                                <Label Text="{Binding Name}" TextColor="#ECF0F1" FontSize="17" FontAttributes="Bold" LineBreakMode="TailTruncation" MaxLines="2"/>
+                                <Label Text="متاح للبيع الفوري" TextColor="#7F8C8D" FontSize="12"/>
+                            </VerticalStackLayout>
+
+                            <!-- رصيد الكمية بستايل بارز -->
+                            <VerticalStackLayout Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" Spacing="5">
+                                <Label Text="الرصيد" TextColor="#BDC3C7" FontSize="12" HorizontalOptions="Center"/>
+                                <Frame BackgroundColor="#1F2E40" CornerRadius="10" Padding="20,8" HasShadow="False" BorderColor="#34495E">
+                                    <Label Text="{Binding StockQuantity, StringFormat='{0:0.##}'}" TextColor="#F1C40F" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                </Frame>
+                            </VerticalStackLayout>
+
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

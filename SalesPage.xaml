@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MajesticMobile.SalesPage"
+             Title="فاتورة بيع جديدة"
+             FlowDirection="RightToLeft"
+             BackgroundColor="#0B131D">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="15">
+
+            <!-- شريط علوي (الفرع والتاريخ ورقم الفاتورة) -->
+            <Frame BackgroundColor="#162130" CornerRadius="12" Padding="15" BorderColor="#2C3E50" HasShadow="True">
+                <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" RowSpacing="10">
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                        <Label Text="الفرع" TextColor="#7F8C8D" FontSize="12" />
+                        <Label x:Name="lblBranchName" Text="---" TextColor="White" FontSize="16" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="End">
+                        <Label Text="التاريخ" TextColor="#7F8C8D" FontSize="12" HorizontalTextAlignment="End" />
+                        <DatePicker x:Name="dpInvoiceDate" TextColor="#F1C40F" FontSize="16" FontAttributes="Bold" BackgroundColor="Transparent" Format="yyyy/MM/dd" HorizontalOptions="End"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                        <Label Text="رقم الفاتورة" TextColor="#7F8C8D" FontSize="12" />
+                        <Label x:Name="lblInvoiceNumber" Text="---" TextColor="#3498DB" FontSize="16" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Frame>
+
+            <!-- الزرار اللي بيودي لسجل الفواتير -->
+            <Button Text="سجل الفواتير 🧾" BackgroundColor="#2980B9" TextColor="White" FontAttributes="Bold" CornerRadius="10" Clicked="OnViewTodayInvoicesClicked" />
+
+            <!-- قسم العميل (ComboBox) -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="اسم العميل (اختياري)" TextColor="#ECF0F1" FontAttributes="Bold" FontSize="14" />
+                <Frame BackgroundColor="#1F2E40" Padding="0" CornerRadius="10" BorderColor="#3498DB" HeightRequest="50">
+                    <Grid ColumnDefinitions="*, 50">
+                        <Entry Grid.Column="0" x:Name="searchCustomer" 
+                               Margin="15,0,0,0"
+                               Placeholder="اختر أو اكتب للبحث..." 
+                               BackgroundColor="Transparent" TextColor="White" PlaceholderColor="#7F8C8D" 
+                               TextChanged="OnCustomerSearchTextChanged" Focused="OnCustomerSearchFocused" />
+
+                        <Button Grid.Column="1" Text="▼" TextColor="#3498DB" FontSize="20" FontAttributes="Bold" 
+                                BackgroundColor="Transparent" BorderColor="Transparent" Padding="0"
+                                Clicked="OnToggleCustomersList_Clicked" />
+                    </Grid>
+                </Frame>
+
+                <Frame x:Name="frameCustomers" IsVisible="False" BackgroundColor="#162130" Padding="0" CornerRadius="10" BorderColor="#34495E" HeightRequest="150" HasShadow="True">
+                    <CollectionView x:Name="cvCustomersList" SelectionMode="Single" SelectionChanged="OnCustomerSelected">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="15,12" BackgroundColor="Transparent">
+                                    <Label Text="{Binding Name}" TextColor="White" FontSize="15" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Frame>
+            </VerticalStackLayout>
+
+            <!-- قسم المنتجات (ComboBox) -->
+            <Frame x:Name="frameAddProduct" BackgroundColor="#162130" CornerRadius="12" Padding="15" BorderColor="#2C3E50" HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+                    <Label x:Name="lblAddSectionTitle" Text="إضافة منتج" TextColor="#ECF0F1" FontAttributes="Bold" FontSize="16" />
+
+                    <VerticalStackLayout Spacing="5">
+                        <Frame BackgroundColor="#0B131D" Padding="0" CornerRadius="10" BorderColor="#3498DB" HeightRequest="50">
+                            <Grid ColumnDefinitions="*, 50">
+                                <Entry Grid.Column="0" x:Name="searchProduct" 
+                                       Margin="15,0,0,0"
+                                       Placeholder="اختر أو اكتب للبحث..." 
+                                       BackgroundColor="Transparent" TextColor="White" PlaceholderColor="#7F8C8D" 
+                                       TextChanged="OnProductSearchTextChanged" Focused="OnProductSearchFocused" />
+
+                                <Button Grid.Column="1" Text="▼" TextColor="#3498DB" FontSize="20" FontAttributes="Bold" 
+                                        BackgroundColor="Transparent" BorderColor="Transparent" Padding="0"
+                                        Clicked="OnToggleProductsList_Clicked" />
+                            </Grid>
+                        </Frame>
+
+                        <Frame x:Name="frameProducts" IsVisible="False" BackgroundColor="#1F2E40" Padding="0" CornerRadius="10" BorderColor="#34495E" HeightRequest="180">
+                            <CollectionView x:Name="cvProductsList" SelectionMode="Single" SelectionChanged="OnProductSelectedFromSearch">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="15,12" BackgroundColor="Transparent">
+                                            <Label Text="{Binding Name}" TextColor="White" FontSize="15" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <Label x:Name="lblAvailableQty" Text="المتاح: -" TextColor="#E74C3C" FontSize="13" FontAttributes="Bold" />
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
+                        <Entry Grid.Column="0" x:Name="entryQuantity" Placeholder="الكمية" Keyboard="Numeric" BackgroundColor="#0B131D" TextColor="White" PlaceholderColor="#7F8C8D" Focused="OnNumberFieldFocused" />
+                        <Entry Grid.Column="1" x:Name="entryUnitPrice" Placeholder="سعر البيع" Keyboard="Numeric" BackgroundColor="#0B131D" TextColor="White" PlaceholderColor="#7F8C8D" Focused="OnNumberFieldFocused" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
+                        <Button Grid.Column="0" x:Name="btnAddItem" Text="+ إضافة للفاتورة" BackgroundColor="#27AE60" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="45" Clicked="OnAddItemClicked" />
+                        <Button Grid.Column="1" x:Name="btnCancelEdit" Text="إلغاء" BackgroundColor="#95A5A6" TextColor="White" FontAttributes="Bold" CornerRadius="10" IsVisible="False" WidthRequest="90" HeightRequest="45" Clicked="OnCancelEditClicked" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <VerticalStackLayout Spacing="2">
+                <Label Text="أصناف الفاتورة" TextColor="#ECF0F1" FontAttributes="Bold" FontSize="16" />
+                <Label Text="اضغط مرتين للتعديل" TextColor="#7F8C8D" FontSize="12" />
+            </VerticalStackLayout>
+
+            <!-- تم تحديد ارتفاع للقائمة لمنع تداخل الـ Scrolling -->
+            <CollectionView x:Name="cvInvoiceItems" SelectionMode="Single" SelectionChanged="OnItemSelected" HeightRequest="250">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#162130" Margin="0,5" Padding="15" BorderColor="#2C3E50" CornerRadius="10" HasShadow="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="OnInvoiceItemDoubleTapped" />
+                            </Frame.GestureRecognizers>
+                            <Grid ColumnDefinitions="*, Auto">
+                                <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                    <Label Text="{Binding ProductName}" TextColor="White" FontSize="15" FontAttributes="Bold" />
+                                    <Label Text="{Binding Quantity, StringFormat='الكمية: {0:0.##}'}" TextColor="#95A5A6" FontSize="13" />
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1" HorizontalOptions="End" Spacing="3">
+                                    <Label Text="{Binding UnitPrice, StringFormat='{0:N2} ج.م'}" TextColor="#3498DB" FontSize="13" />
+                                    <Label Text="{Binding Total, StringFormat='{0:N2} ج.م'}" TextColor="#2ECC71" FontSize="16" FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label Text="لم يتم إضافة أصناف بعد." TextColor="#7F8C8D" HorizontalOptions="Center" Margin="0,20" />
+                </CollectionView.EmptyView>
+            </CollectionView>
+
+            <!-- تم إضافة الاسم (x:Name) للتحكم فيه لاحقاً -->
+            <Button x:Name="btnRemoveItem" Text="حذف الصنف المحدد 🗑" BackgroundColor="#E74C3C" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="45" Clicked="OnRemoveItemClicked" />
+
+            <!-- الحسابات وطرق الدفع -->
+            <Frame BackgroundColor="#162130" CornerRadius="12" Padding="15" BorderColor="#2C3E50" HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto, Auto" ColumnSpacing="15" RowSpacing="15">
+
+                        <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="#1F2E40" CornerRadius="10" Padding="10" BorderColor="Transparent">
+                            <VerticalStackLayout>
+                                <Label Text="الإجمالي" TextColor="#BDC3C7" FontSize="13" HorizontalOptions="Center" />
+                                <Label x:Name="lblTotal" Text="0.00 ج.م" TextColor="White" FontSize="17" FontAttributes="Bold" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <Frame Grid.Row="0" Grid.Column="1" BackgroundColor="#1F2E40" CornerRadius="10" Padding="10" BorderColor="Transparent">
+                            <VerticalStackLayout>
+                                <Label Text="الخصم" TextColor="#BDC3C7" FontSize="13" HorizontalOptions="Center" />
+                                <Entry x:Name="entryDiscount" Placeholder="0" Keyboard="Numeric" TextColor="#E74C3C" FontAttributes="Bold" BackgroundColor="Transparent" HorizontalTextAlignment="Center" TextChanged="OnDiscountOrPaidChanged" Focused="OnNumberFieldFocused" />
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <Frame Grid.Row="1" Grid.Column="0" BackgroundColor="#1F2E40" CornerRadius="10" Padding="10" BorderColor="Transparent">
+                            <VerticalStackLayout>
+                                <Label Text="الصافي المطلوب" TextColor="#BDC3C7" FontSize="13" HorizontalOptions="Center" />
+                                <Label x:Name="lblNetRequired" Text="0.00 ج.م" TextColor="#3498DB" FontSize="17" FontAttributes="Bold" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <Frame Grid.Row="1" Grid.Column="1" BackgroundColor="#1F2E40" CornerRadius="10" Padding="10" BorderColor="Transparent">
+                            <VerticalStackLayout>
+                                <Label Text="المدفوع" TextColor="#BDC3C7" FontSize="13" HorizontalOptions="Center" />
+                                <Entry x:Name="entryPaidAmount" Placeholder="0" Keyboard="Numeric" TextColor="#2ECC71" FontAttributes="Bold" BackgroundColor="Transparent" HorizontalTextAlignment="Center" TextChanged="OnDiscountOrPaidChanged" Focused="OnNumberFieldFocused" />
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <Frame Grid.Row="2" Grid.Column="0" BackgroundColor="#1F2E40" CornerRadius="10" Padding="5" BorderColor="Transparent">
+                            <VerticalStackLayout>
+                                <Label Text="طريقة الدفع" TextColor="#BDC3C7" FontSize="13" HorizontalOptions="Center" />
+                                <Picker x:Name="pickerPaymentMethod" Title="اختر طريقة الدفع" TextColor="#F1C40F" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <Frame Grid.Row="2" Grid.Column="1" BackgroundColor="#34495E" CornerRadius="10" Padding="10" BorderColor="Transparent">
+                            <VerticalStackLayout VerticalOptions="Center">
+                                <Label Text="المتبقي" TextColor="#ECF0F1" FontSize="13" HorizontalOptions="Center" />
+                                <Label x:Name="lblRemaining" Text="0.00 ج.م" TextColor="#F1C40F" FontSize="17" FontAttributes="Bold" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Frame>
+
+                        <Frame Grid.Row="3" Grid.ColumnSpan="2" BackgroundColor="#1F2E40" CornerRadius="10" Padding="5" BorderColor="Transparent">
+                            <VerticalStackLayout>
+                                <Label Text="ملاحظات الفاتورة (اختياري)" TextColor="#BDC3C7" FontSize="12" Margin="5,0"/>
+                                <Editor x:Name="editorNotes" Placeholder="اكتب التفاصيل هنا..." BackgroundColor="Transparent" TextColor="White" HeightRequest="60" PlaceholderColor="#7F8C8D"/>
+                            </VerticalStackLayout>
+                        </Frame>
+
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- أزرار الإجراءات (حفظ / طباعة / فاتورة جديدة) -->
+            <VerticalStackLayout Spacing="10" Margin="0,0,0,20">
+                <Button x:Name="btnSaveInvoice" Text="حفظ واعتماد الفاتورة ✔️" BackgroundColor="#27AE60" TextColor="White" FontSize="18" FontAttributes="Bold" CornerRadius="12" HeightRequest="60" Clicked="OnSaveInvoiceClicked" />
+
+                <Grid x:Name="gridPostSaveActions" ColumnDefinitions="*,*" ColumnSpacing="10" IsVisible="False">
+                    <Button Grid.Column="0" Text="مشاركة الفاتورة 📤" BackgroundColor="#2980B9" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="50" Clicked="OnShareInvoiceClicked" />
+                    <Button Grid.Column="1" Text="طباعة / PDF 🖨" BackgroundColor="#8E44AD" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="50" Clicked="OnPrintInvoiceClicked" />
+                </Grid>
+
+                <Button x:Name="btnNewInvoice" Text="بدء فاتورة جديدة ➕" BackgroundColor="#34495E" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="50" IsVisible="False" Clicked="OnNewInvoiceClicked" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
