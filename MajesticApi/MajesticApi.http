@@ -1,0 +1,6 @@
+@MajesticApi_HostAddress = http://localhost:5268
+
+GET {{MajesticApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
